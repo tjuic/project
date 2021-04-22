@@ -33,6 +33,15 @@ void SelectionSortPos (Covidcase covidState[], int size) {
    }
 }
 
+void printStar (Covidcase covidState[], int totalPos) {
+   int i;
+   printf("%s: ", covidState[0].state);
+   for(i = 0; i < totalPos ; i++) {
+      printf("* ");
+   }
+   printf("\n");
+}
+
 
 
 
@@ -50,16 +59,68 @@ void printCaseData (Covidcase caseC) {
 int main() {
    
    FILE* inFile = NULL;
-   //Covidcase covidCase[10000];     //unknow max data
+   Covidcase covidCase[6000];     //unknow max data
    Covidcase inCoState[6000];
+   Covidcase tempS[5000];
    int ns;
    char inputS[10];
+   char trash[300];
+   int i = 0;
+   int j = 0;
+   int totalPos;
+   int newPos, newTot, newDeath, currHos, currVent;
+   char date[20], state[20], currS[20];
+
+   printf("COVID-19 cases of the US by states and territories\n\n");
+   //printf("How many states or territories would you want to analyze, max of 56\n");
+   //printf("(in alphabetical order):\n");        //i.e. CA): 
+   //scanf("%d",&ns);
+   printf("Covid cases by state and terrotories (* represent a 1000 cases): \n");
+
+   inFile = fopen("COVID19USdata_2020_2021.txt", "r");
+
+   fgets(trash,300,inFile);
+
+   for(i = 0; i < 56; i++) {
+   //while(!feof(inFile)) {   
+      j = 0;
+      totalPos = 0;
+      covidCase[j] = tempS[0];
+      j++;
+      fscanf(inFile, "%s", covidCase[j].date);
+      fscanf(inFile, "%s", covidCase[j].state);
+      fscanf(inFile, "%d", &covidCase[j].newPos);
+      fscanf(inFile, "%d", &covidCase[j].newTot);
+      fscanf(inFile, "%d", &covidCase[j].newDeath);
+      fscanf(inFile, "%d", &covidCase[j].currHos);
+      fscanf(inFile, "%d", &covidCase[j].currVent);
+      totalPos = newPos;
+      strcpy(currS, state);
+      j++;
+      while(strcmp(covidCase[j-1].state, currS) == 0){
+         fscanf(inFile, "%s", covidCase[j].date);
+         fscanf(inFile, "%s", covidCase[j].state);
+         fscanf(inFile, "%d", &covidCase[j].newPos);
+         fscanf(inFile, "%d", &covidCase[j].newTot);
+         fscanf(inFile, "%d", &covidCase[j].newDeath);
+         fscanf(inFile, "%d", &covidCase[j].currHos);
+         fscanf(inFile, "%d", &covidCase[j].currVent);
+
+         totalPos += newPos;
+         j++;
+      }
+      printStar(covidCase, totalPos);
+
+      tempS[0] = covidCase[j-1];
+
+   }
+
+
+   fclose(inFile);
    
-   printf("COVID-19 cases of the US by states and territories\n");
-   // printf("How many states or territories would you want to analyze, max of 56\n");
-   // printf("(in alphabetical order):\n");        //i.e. CA): 
-   // scanf("%d",&ns);
-   
+   //program after histogram -----------------------------------
+   inFile = NULL;
+
    printf("Which state or territory data you would wasnt to anlyze (i.e. CA):\n");
    scanf("%s",inputS);
    
@@ -71,18 +132,18 @@ int main() {
    //    return -1;  //file open error          //not needed, one file need
    // }
    
-   char trash[300];
+   //char trash[300];
    fgets(trash,300,inFile);
    
    printf(". . . .\n");
    
    
-   int i = 0;
-   int j = 0;
-   int newPos, newTot, newDeath, currHos, currVent;
-   char date[20], state[20];
-   char currS[20];
-   int totalPos = 0;
+   i = 0;
+   j = 0;
+   newPos = 0, newTot = 0, newDeath = 0, currHos = 0, currVent = 0;
+   strcpy(date, NULL);
+   strcpy(state, NULL);
+   totalPos = 0;
    int totDea = 0;
    
    while(!feof(inFile)){
