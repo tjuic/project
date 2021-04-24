@@ -12,13 +12,13 @@ typedef struct Covidcase_struct {
    int  currVent;
 } Covidcase;
 
-void SelectionSortPos (Covidcase covidState[], int size) {
+void SelectionSortPos (Covidcase covidState[], int size) {  
    int i;
    int j;
    int indexSmallest;
    Covidcase temp;
    
-   for (i = 0; i < size - 1; i++) {
+   for (i = 0; i < size - 1; i++) {    //one more than the size
       indexSmallest = i;
       for(j = i + 1; j < size; j++) {
          
@@ -33,10 +33,10 @@ void SelectionSortPos (Covidcase covidState[], int size) {
    }
 }
 
-void printStar (Covidcase covidState[], int totalPos) {
+void printStar (char covidState[20], int totalPos) {
    int i;
-   printf("%s: ", covidState[0].state);
-   for(i = 0; i < totalPos ; i++) {
+   printf("%s: ", covidState);
+   for(i = 0; i < totalPos/50000 ; i++) {
       printf("* ");
    }
    printf("\n");
@@ -59,15 +59,16 @@ void printCaseData (Covidcase caseC) {
 int main() {
    
    FILE* inFile = NULL;
-   Covidcase covidCase[6000];     //unknow max data
-   Covidcase inCoState[6000];
-   Covidcase tempS[5000];
+   Covidcase covidCase[500];     //unknow max data
+   Covidcase inCoState[500];
+   Covidcase tempS[500];   // emp = {0};
+   
    int ns;
    char inputS[10];
    char trash[300];
    int i = 0;
    int j = 0;
-   int totalPos;
+   int totalPos = 0;
    int newPos, newTot, newDeath, currHos, currVent;
    char date[20], state[20], currS[20];
 
@@ -81,45 +82,71 @@ int main() {
 
    fgets(trash,300,inFile);
 
-   for(i = 0; i < 56; i++) {
+   for(i = 0; i < 55; i++) {
    //while(!feof(inFile)) {   
-      j = 0;
-      totalPos = 0;
-      covidCase[j] = tempS[0];
-      j++;
-      fscanf(inFile, "%s", covidCase[j].date);
-      fscanf(inFile, "%s", covidCase[j].state);
-      fscanf(inFile, "%d", &covidCase[j].newPos);
-      fscanf(inFile, "%d", &covidCase[j].newTot);
-      fscanf(inFile, "%d", &covidCase[j].newDeath);
-      fscanf(inFile, "%d", &covidCase[j].currHos);
-      fscanf(inFile, "%d", &covidCase[j].currVent);
-      totalPos = newPos;
+      //j = 0;
+      //totalPos = 0;
+      //covidCase[j] = tempS[0];
+      //j++;
+      fscanf(inFile, "%s", date);
+      fscanf(inFile, "%s", state);
+      fscanf(inFile, "%d", &newPos);
+      fscanf(inFile, "%d", &newTot);
+      fscanf(inFile, "%d", &newDeath);
+      fscanf(inFile, "%d", &currHos);
+      fscanf(inFile, "%d", &currVent);
+      totalPos += newPos;
       strcpy(currS, state);
-      j++;
-      while(strcmp(covidCase[j-1].state, currS) == 0){
-         fscanf(inFile, "%s", covidCase[j].date);
-         fscanf(inFile, "%s", covidCase[j].state);
-         fscanf(inFile, "%d", &covidCase[j].newPos);
-         fscanf(inFile, "%d", &covidCase[j].newTot);
-         fscanf(inFile, "%d", &covidCase[j].newDeath);
-         fscanf(inFile, "%d", &covidCase[j].currHos);
-         fscanf(inFile, "%d", &covidCase[j].currVent);
+      //j++;
+      while((strcmp(state, currS) == 0) && currS != NULL){
+         fscanf(inFile, "%s", date);
+         fscanf(inFile, "%s", state);
+         fscanf(inFile, "%d", &newPos);
+         fscanf(inFile, "%d", &newTot);
+         fscanf(inFile, "%d", &newDeath);
+         fscanf(inFile, "%d", &currHos);
+         fscanf(inFile, "%d", &currVent);
 
          totalPos += newPos;
-         j++;
+         //j++;
       }
-      printStar(covidCase, totalPos);
+      totalPos += - newPos;
+      printStar(currS, totalPos);
 
-      tempS[0] = covidCase[j-1];
+      totalPos = 0;
+      totalPos = newPos;
+      //tempS[0] = covidCase[j-1];
+
+      // j = 0;
+      // while(strcmp(covidCase[j].state, currS) == 0) {
+      //    covidCase[j] = emp;
+      //    j++;
+      // }
+      // totalPos = 0;
+   //}
+   }
+
+   while(!feof(inFile)) {
+      fscanf(inFile, "%s", date);
+      fscanf(inFile, "%s", state);
+      fscanf(inFile, "%d", &newPos);
+      fscanf(inFile, "%d", &newTot);
+      fscanf(inFile, "%d", &newDeath);
+      fscanf(inFile, "%d", &currHos);
+      fscanf(inFile, "%d", &currVent);
+
+      totalPos += newPos;
 
    }
 
+   printStar(state, totalPos);
+   printf("\n\n");
 
    fclose(inFile);
    
    //program after histogram -----------------------------------
-   inFile = NULL;
+   //inFile = NULL;
+   //fseek(inFile, 81, 81);
 
    printf("Which state or territory data you would wasnt to anlyze (i.e. CA):\n");
    scanf("%s",inputS);
@@ -156,6 +183,7 @@ int main() {
       fscanf(inFile, "%d", &currHos);
       fscanf(inFile, "%d", &currVent);
       
+
       if(strcmp(state, inputS) == 0) {
          
          strcpy(inCoState[i].date,date);
