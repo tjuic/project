@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 
 typedef struct Covidcase_struct {
    char date[50];
@@ -10,6 +11,7 @@ typedef struct Covidcase_struct {
    int  newDeath;
    int  currHos;
    int  currVent;
+   struct Covidcase_struct* next;
 } Covidcase;
 
 void SelectionSortPos (Covidcase covidState[], int size) {  
@@ -58,10 +60,12 @@ void printCaseData (Covidcase caseC) {
 
 int main() {
    
+    
+   (Covidcase*)malloc(sizeof(Covidcase));
    FILE* inFile = NULL;
-   Covidcase covidCase[500];     //unknow max data
-   Covidcase inCoState[500];
-   Covidcase tempS[500];   // emp = {0};
+   Covidcase* covidCase[25000] = (Covidcase*)malloc(sizeof(Covidcase));     //unknow max data
+   Covidcase inCoState[400];
+   //Covidcase tempS[500];   // emp = {0};
    
    int ns;
    char inputS[10];
@@ -96,8 +100,17 @@ int main() {
       fscanf(inFile, "%d", &currHos);
       fscanf(inFile, "%d", &currVent);
       totalPos += newPos;
+      
+      strcpy(covidCase[j].date, date); 
+      strcpy(covidCase[j].state, state);
+      covidCase[j].newPos = newPos;
+      covidCase[j].newTot = newTot;
+      covidCase[j].newDeath = newDeath;
+      covidCase[j].currHos = currHos;
+      covidCase[j].currVent = currVent;
+
       strcpy(currS, state);
-      //j++;
+      j++;
       while((strcmp(state, currS) == 0) && currS != NULL){
          fscanf(inFile, "%s", date);
          fscanf(inFile, "%s", state);
@@ -107,8 +120,16 @@ int main() {
          fscanf(inFile, "%d", &currHos);
          fscanf(inFile, "%d", &currVent);
 
+         strcpy(covidCase[j].date, date); 
+         strcpy(covidCase[j].state, state);
+         covidCase[j].newPos = newPos;
+         covidCase[j].newTot = newTot;
+         covidCase[j].newDeath = newDeath;
+         covidCase[j].currHos = currHos;
+         covidCase[j].currVent = currVent;
+
          totalPos += newPos;
-         //j++;
+         j++;
       }
       totalPos += - newPos;
       printStar(currS, totalPos);
@@ -130,10 +151,18 @@ int main() {
       fscanf(inFile, "%s", date);
       fscanf(inFile, "%s", state);
       fscanf(inFile, "%d", &newPos);
-      fscanf(inFile, "%d", &newTot);
+      fscanf(inFile, "%d", &newTot);            //the last one
       fscanf(inFile, "%d", &newDeath);
       fscanf(inFile, "%d", &currHos);
       fscanf(inFile, "%d", &currVent);
+
+      strcpy(covidCase[j].date, date); 
+      strcpy(covidCase[j].state, state);
+      covidCase[j].newPos = newPos;
+      covidCase[j].newTot = newTot;
+      covidCase[j].newDeath = newDeath;
+      covidCase[j].currHos = currHos;
+      covidCase[j].currVent = currVent;
 
       totalPos += newPos;
 
@@ -153,51 +182,53 @@ int main() {
    
    
    
-   inFile = fopen("COVID19USdata_2020_2021.txt", "r");
+   //inFile = fopen("COVID19USdata_2020_2021.txt", "r");
    // if(inFile == NULL) {
    //    printf("No Data Available.\n");
    //    return -1;  //file open error          //not needed, one file need
    // }
    
    //char trash[300];
-   fgets(trash,300,inFile);
+   //fgets(trash,300,inFile);
    
    printf(". . . .\n");
    
    
    i = 0;
    j = 0;
-   newPos = 0, newTot = 0, newDeath = 0, currHos = 0, currVent = 0;
-   strcpy(date, NULL);
-   strcpy(state, NULL);
+   //newPos = 0, newTot = 0, newDeath = 0, currHos = 0, currVent = 0;
+   //strcpy(date, NULL);
+   //strcpy(state, NULL);
    totalPos = 0;
    int totDea = 0;
    
-   while(!feof(inFile)){
+   while(covidCase != NULL){
    
-      fscanf(inFile, "%s", date);
-      fscanf(inFile, "%s", state);
-      fscanf(inFile, "%d", &newPos);
-      fscanf(inFile, "%d", &newTot);
-      fscanf(inFile, "%d", &newDeath);
-      fscanf(inFile, "%d", &currHos);
-      fscanf(inFile, "%d", &currVent);
+      // fscanf(inFile, "%s", date);
+      // fscanf(inFile, "%s", state);
+      // fscanf(inFile, "%d", &newPos);
+      // fscanf(inFile, "%d", &newTot);
+      // fscanf(inFile, "%d", &newDeath);
+      // fscanf(inFile, "%d", &currHos);
+      // fscanf(inFile, "%d", &currVent);
       
 
-      if(strcmp(state, inputS) == 0) {
+      if(strcmp(covidCase[j].state, inputS) == 0) {
          
-         strcpy(inCoState[i].date,date);
-         strcpy(inCoState[i].state,state);
-         inCoState[i].newPos = newPos;
-         inCoState[i].newTot = newTot;
-         inCoState[i].newDeath = newDeath;
-         inCoState[i].currHos = currHos;
-         inCoState[i].currVent = currVent;
+         strcpy(inCoState[i].date, covidCase[j].date);
+         strcpy(inCoState[i].state, covidCase[j].state);
+         inCoState[i].newPos = covidCase[j].newPos;
+         inCoState[i].newTot = covidCase[j].newTot;
+         inCoState[i].newDeath = covidCase[j].newDeath;
+         inCoState[i].currHos = covidCase[j].currHos;
+         inCoState[i].currVent = covidCase[j].currVent;
          
          totalPos += inCoState[i].newPos;
          totDea += inCoState[i].newDeath;
          i++;
       }
+      j++;
+      covidCase->next;
    }
    
    fclose(inFile);
