@@ -62,7 +62,7 @@ int main() {
    
    
    FILE* inFile = NULL;
-   Covidcase covidCase[10000];
+   Covidcase covidCase[1000];
    Covidcase* mem = malloc(25000 * sizeof(covidCase));      //allocate mem
    Covidcase inCoState[400];
    //Covidcase tempS[500];   // emp = {0};
