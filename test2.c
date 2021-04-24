@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
+
 typedef struct Covidcase_struct {
    char date[50];
    char state[50];
@@ -9,14 +11,16 @@ typedef struct Covidcase_struct {
    int  newDeath;
    int  currHos;
    int  currVent;
+   //struct Covidcase_struct* next;
 } Covidcase;
-void SelectionSortPos (Covidcase covidState[], int size) {
+
+void SelectionSortPos (Covidcase covidState[], int size) {  
    int i;
    int j;
    int indexSmallest;
    Covidcase temp;
    
-   for (i = 0; i < size - 1; i++) {
+   for (i = 0; i < size - 1; i++) {    //one more than the size
       indexSmallest = i;
       for(j = i + 1; j < size; j++) {
          
@@ -30,6 +34,19 @@ void SelectionSortPos (Covidcase covidState[], int size) {
       covidState[indexSmallest] = temp;
    }
 }
+
+void printStar (char covidState[20], int totalPos) {
+   int i;
+   printf("%s: ", covidState);
+   for(i = 0; i < totalPos/50000 ; i++) {
+      printf("* ");
+   }
+   printf("\n");
+}
+
+
+
+
 void printCaseData (Covidcase caseC) {
    printf("                   Date: %s\n", caseC.date);
    printf("                  State: %s\n", caseC.state);          
@@ -41,64 +58,40 @@ void printCaseData (Covidcase caseC) {
    return;
 }   
 
-void printStar (Covidcase covidState[], int totalPos) {
-   int i;
-   printf("%s: ", covidState[0].state);
-   for(i = 0; i < totalPos/50000 ; i++) {
-      printf("* ");
-   }
-   printf("\n");
-}
-
 int main() {
    
+   
    FILE* inFile = NULL;
-   //Covidcase covidCase[10000];     //unknow max data
-   Covidcase inCoState[6000];
+   //Covidcase covidCase[1000];
+   //Covidcase* mem = malloc(25000 * sizeof(covidCase));      //allocate mem
+   Covidcase inCoState[400];
+   //Covidcase tempS[500];   // emp = {0};
+   
    int ns;
    char inputS[10];
-   
-   printf("COVID-19 cases of the US by states and territories\n");
-   // printf("How many states or territories would you want to analyze, max of 56\n");
-   // printf("(in alphabetical order):\n");        //i.e. CA): 
-   // scanf("%d",&ns);
-   
-   printf("Which state or territory data you would wasnt to anlyze (i.e. CA):\n");
-   scanf("%s",inputS);
-   
-
-
-   inFile = fopen("COVID19USdata_2020_2021.txt", "r");
-   if(inFile == NULL) {
-      printf("No Data Available.\n");
-      return -1;  //file open error
-   }
-   // if(inFile == NULL) {
-   //    printf("No Data Available.\n");
-   //    return -1;  //file open error          //not needed, one file need
-   // }
-
-   char garbage[20];
-   int garb;
    char trash[300];
-   //fscanf(inFile, "%s %s %d %d %d %d %d", garbage, garbage, garb, garb, garb, garb, garb);
-   fgets(trash,300,inFile);
-
-   printf(". . . .\n");
-   
-   
    int i = 0;
    int j = 0;
-   int newPos, newTot, newDeath, currHos, currVent;
-   char date[20], state[20];
-   char currS[20];
    int totalPos = 0;
-   int totDea = 0;
+   int newPos, newTot, newDeath, currHos, currVent;
+   char date[20], state[20], currS[20];
 
-   while(!feof(inFile)){
-      // fscanf(inFile, "%s %s %d %d %d %d %d", covidCase[i].date, covidCase[i].state, &covidCase[i].newPos,
-                             //&covidCase[i].newTot, &covidCase[i].newDeath, &covidCase[i].currHos, &covidCase[i].currVent);
+   printf("COVID-19 cases of the US by states and territories\n\n");
+   //printf("How many states or territories would you want to analyze, max of 56\n");
+   //printf("(in alphabetical order):\n");        //i.e. CA): 
+   //scanf("%d",&ns);
+   printf("Covid cases by state and terrotories (* represent a 1000 cases): \n");
 
+   inFile = fopen("COVID19USdata_2020_2021.txt", "r");
+
+   fgets(trash,300,inFile);
+
+   for(i = 0; i < 55; i++) {
+   //while(!feof(inFile)) {   
+      //j = 0;
+      //totalPos = 0;
+      //covidCase[j] = tempS[0];
+      //j++;
       fscanf(inFile, "%s", date);
       fscanf(inFile, "%s", state);
       fscanf(inFile, "%d", &newPos);
@@ -106,66 +99,129 @@ int main() {
       fscanf(inFile, "%d", &newDeath);
       fscanf(inFile, "%d", &currHos);
       fscanf(inFile, "%d", &currVent);
+      totalPos += newPos;
 
+      strcpy(currS, state);
+      //j++;
+      while((strcmp(state, currS) == 0) && currS != NULL){
+         //(Covidcase*)malloc(sizeof(Covidcase));
+         fscanf(inFile, "%s", date);
+         fscanf(inFile, "%s", state);
+         fscanf(inFile, "%d", &newPos);
+         fscanf(inFile, "%d", &newTot);
+         fscanf(inFile, "%d", &newDeath);
+         fscanf(inFile, "%d", &currHos);
+         fscanf(inFile, "%d", &currVent);
+
+         totalPos += newPos;
+         //j++;
+      }
+      totalPos += - newPos;
+      printStar(currS, totalPos);
+
+      totalPos = 0;
+      totalPos = newPos;
+      //tempS[0] = covidCase[j-1];
+
+      // j = 0;
+      // while(strcmp(covidCase[j].state, currS) == 0) {
+      //    covidCase[j] = emp;
+      //    j++;
+      // }
+      // totalPos = 0;
+   //}
+   }
+
+   while(!feof(inFile)) {
+      fscanf(inFile, "%s", date);
+      fscanf(inFile, "%s", state);
+      fscanf(inFile, "%d", &newPos);
+      fscanf(inFile, "%d", &newTot);            //the last one
+      fscanf(inFile, "%d", &newDeath);
+      fscanf(inFile, "%d", &currHos);
+      fscanf(inFile, "%d", &currVent);
+
+      totalPos += newPos;
+
+   }
+
+   printStar(state, totalPos);
+   printf("\n\n");
+
+   fclose(inFile);
+   //free(mem);
+
+   //program after histogram -----------------------------------
+   //inFile = NULL;
+   //fseek(inFile, 81, 81);
+
+   printf("Which state or territory data you would wasnt to anlyze (i.e. CA):\n");
+   scanf("%s",inputS);
+   
+   
+   
+   inFile = fopen("COVID19USdata_2020_2021.txt", "r");
+   // if(inFile == NULL) {
+   //    printf("No Data Available.\n");
+   //    return -1;  //file open error          //not needed, one file need
+   // }
+   
+   //char trash[300];
+   //fgets(trash,300,inFile);
+   
+   printf("\n. . . .\n");
+   
+   
+   i = 0;
+   j = 0;
+   //newPos = 0, newTot = 0, newDeath = 0, currHos = 0, currVent = 0;
+   //strcpy(date, NULL);
+   //strcpy(state, NULL);
+   totalPos = 0;
+   int totDea = 0;
+   
+   while(!feof(inFile)){
+   
+      fscanf(inFile, "%s", date);
+      fscanf(inFile, "%s", state);
+      fscanf(inFile, "%d", &newPos);
+      fscanf(inFile, "%d", &newTot);
+      fscanf(inFile, "%d", &newDeath);
+      fscanf(inFile, "%d", &currHos);
+      fscanf(inFile, "%d", &currVent);
+      
       if(strcmp(state, inputS) == 0) {
-         //inCoState[j] = covidCase[i];
-
-         strcpy(inCoState[i].date,date);
-         strcpy(inCoState[i].state,state);
+         
+         strcpy(inCoState[i].date, date);
+         strcpy(inCoState[i].state, state);
          inCoState[i].newPos = newPos;
          inCoState[i].newTot = newTot;
          inCoState[i].newDeath = newDeath;
          inCoState[i].currHos = currHos;
          inCoState[i].currVent = currVent;
-
-        //  printf("                   Date: %s\n", inCoState[j].date);
-        //  printf("                  State: %s\n", inCoState[j].state);         
-        //  printf("      New positive test: %d tests\n", inCoState[j].newPos);
-        //  printf("             Total test: %d cases\n", inCoState[j].newTot);
-        //  printf("              New death: %d deaths\n", inCoState[j].newDeath);     //this only works
-        //  printf(" Currently hospitalized: %d cases\n", inCoState[j].currHos);
-        //  printf("Current on a ventilator: %d cases\n\n", inCoState[j].currVent);
-
-
-
+         
          totalPos += inCoState[i].newPos;
          totDea += inCoState[i].newDeath;
          i++;
-         //break;
       }
+      //j++;
+      //covidCase->next;
    }
-
+   
    fclose(inFile);
-
-   //printCaseData(inCoState);
-
+   
    SelectionSortPos(inCoState,i);
-   //printf("\n10 most increase case:\n");
-   // for( i = 0; i < 3; i++) {
-   //    printPlanetData(exoplanets[i]);  
-   // }
-   printf("\nDate with most positive case:\n");
+
+   printf("Date with most positive case:\n");
    for( j = 0; j < 10; j++) {
       printCaseData(inCoState[i-j-1]);  
    }
-
-   //       printf("                   Date: %s\n", inCoState[i-1].date);
-   //       printf("                  State: %s\n", inCoState[i-1].state);       
-   //       printf("      New positive test: %d tests\n", inCoState[i-1].newPos);
-   //       printf("             Total test: %d cases\n", inCoState[i-1].newTot);
-   //       printf("              New death: %d deaths\n", inCoState[i-1].newDeath);     //this only works
-   //       printf(" Currently hospitalized: %d cases\n", inCoState[i-1].currHos);
-   //       printf("Current on a ventilator: %d cases\n\n", inCoState[i-1].currVent);
-   // printf("            Total case: %d\n",totalPos);
-   // printf("           Total death: %d\n",totDea);
-
-
-
+   
    printf("            Total case: %d\n",totalPos);
    printf("           Total death: %d\n",totDea);
 
-    printStar(inCoState, totalPos);
 
    return 0;
 }
+
 

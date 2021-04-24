@@ -60,10 +60,10 @@ void printCaseData (Covidcase caseC) {
 
 int main() {
    
-    
-   (Covidcase*)malloc(sizeof(Covidcase));
+   
    FILE* inFile = NULL;
-   Covidcase* covidCase[25000] = (Covidcase*)malloc(sizeof(Covidcase));     //unknow max data
+   Covidcase covidCase[10000];
+   Covidcase* mem = malloc(25000 * sizeof(covidCase));      //allocate mem
    Covidcase inCoState[400];
    //Covidcase tempS[500];   // emp = {0};
    
@@ -112,6 +112,7 @@ int main() {
       strcpy(currS, state);
       j++;
       while((strcmp(state, currS) == 0) && currS != NULL){
+         //(Covidcase*)malloc(sizeof(Covidcase));
          fscanf(inFile, "%s", date);
          fscanf(inFile, "%s", state);
          fscanf(inFile, "%d", &newPos);
@@ -172,7 +173,8 @@ int main() {
    printf("\n\n");
 
    fclose(inFile);
-   
+   free(mem);
+
    //program after histogram -----------------------------------
    //inFile = NULL;
    //fseek(inFile, 81, 81);
