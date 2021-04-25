@@ -11,7 +11,6 @@ typedef struct Covidcase_struct {
    int  newDeath;
    int  currHos;
    int  currVent;
-   //struct Covidcase_struct* next;
 } Covidcase;
 
 void SelectionSortPos (Covidcase covidState[], int size) {  
@@ -28,7 +27,6 @@ void SelectionSortPos (Covidcase covidState[], int size) {
             indexSmallest = j;
          }
       }
-      
       temp = covidState[i];
       covidState[i] = covidState[indexSmallest];
       covidState[indexSmallest] = temp;
@@ -43,9 +41,6 @@ void printStar (char covidState[20], int totalPos) {
    }
    printf("\n");
 }
-
-
-
 
 void printCaseData (Covidcase caseC) {
    printf("                   Date: %s\n", caseC.date);
@@ -62,10 +57,7 @@ int main() {
    
    
    FILE* inFile = NULL;
-   //Covidcase covidCase[1000];
-   //Covidcase* mem = malloc(25000 * sizeof(covidCase));      //allocate mem
    Covidcase inCoState[400];
-   //Covidcase tempS[500];   // emp = {0};
    
    int ns;
    char inputS[10];
@@ -77,21 +69,14 @@ int main() {
    char date[20], state[20], currS[20];
 
    printf("COVID-19 cases of the US by states and territories\n\n");
-   //printf("How many states or territories would you want to analyze, max of 56\n");
-   //printf("(in alphabetical order):\n");        //i.e. CA): 
-   //scanf("%d",&ns);
-   printf("Covid cases by state and terrotories (* represent a 1000 cases): \n");
+   printf("Covid cases by state and terrotories (* represent a 50000 cases): \n");
 
    inFile = fopen("COVID19USdata_2020_2021.txt", "r");
 
    fgets(trash,300,inFile);
 
    for(i = 0; i < 55; i++) {
-   //while(!feof(inFile)) {   
-      //j = 0;
-      //totalPos = 0;
-      //covidCase[j] = tempS[0];
-      //j++;
+
       fscanf(inFile, "%s", date);
       fscanf(inFile, "%s", state);
       fscanf(inFile, "%d", &newPos);
@@ -102,9 +87,8 @@ int main() {
       totalPos += newPos;
 
       strcpy(currS, state);
-      //j++;
+      
       while((strcmp(state, currS) == 0) && currS != NULL){
-         //(Covidcase*)malloc(sizeof(Covidcase));
          fscanf(inFile, "%s", date);
          fscanf(inFile, "%s", state);
          fscanf(inFile, "%d", &newPos);
@@ -114,22 +98,12 @@ int main() {
          fscanf(inFile, "%d", &currVent);
 
          totalPos += newPos;
-         //j++;
       }
       totalPos += - newPos;
       printStar(currS, totalPos);
 
       totalPos = 0;
       totalPos = newPos;
-      //tempS[0] = covidCase[j-1];
-
-      // j = 0;
-      // while(strcmp(covidCase[j].state, currS) == 0) {
-      //    covidCase[j] = emp;
-      //    j++;
-      // }
-      // totalPos = 0;
-   //}
    }
 
    while(!feof(inFile)) {
@@ -149,36 +123,22 @@ int main() {
    printf("\n\n");
 
    fclose(inFile);
-   //free(mem);
 
    //program after histogram -----------------------------------
-   //inFile = NULL;
-   //fseek(inFile, 81, 81);
 
    printf("Which state or territory data you would wasnt to anlyze (i.e. CA):\n");
    scanf("%s",inputS);
    
    
-   
-   //inFile = fopen("COVID19USdata_2020_2021.txt", "r");
-   // if(inFile == NULL) {
-   //    printf("No Data Available.\n");
-   //    return -1;  //file open error          //not needed, one file need
-   // }
-   
-   //char trash[300];
-   //fgets(trash,300,inFile);
+   int totalDea;
    
    printf("\n. . . .\n");
    
    while(strcmp(inputS, "q") != 0) {
       inFile = fopen("COVID19USdata_2020_2021.txt", "r");
+      fgets(trash,300,inFile);
       i = 0;
-      //newPos = 0, newTot = 0, newDeath = 0, currHos = 0, currVent = 0;
-      //strcpy(date, NULL);
-      //strcpy(state, NULL);
-      totalPos = 0;
-      int totDea = 0;
+      totalDea = 0;
    
       while(!feof(inFile)){
    
@@ -201,11 +161,9 @@ int main() {
             inCoState[i].currVent = currVent;
          
             totalPos += inCoState[i].newPos;
-            totDea += inCoState[i].newDeath;
+            totalDea += inCoState[i].newDeath;
             i++;
          }
-      //j++;
-      //covidCase->next;
       }
    
       fclose(inFile);
@@ -218,7 +176,7 @@ int main() {
       }
    
       printf("            Total case: %d\n",totalPos);
-      printf("           Total death: %d\n\n",totDea);
+      printf("           Total death: %d\n\n",totalDea);
 
 
       printf("Which state or territory data you would wasnt to anlyze (i.e. CA)\n");
@@ -226,8 +184,6 @@ int main() {
       scanf("%s",inputS);
 
    }
-
-//fclose(inFile);
 
 return 0;
 }
