@@ -45,7 +45,7 @@ void printStar (char covidState[20], int totalPos) {
 
 void printCaseData (Covidcase caseC) {
    printf("                   Date: %s\n", caseC.date);
-   printf("                  State: %s\n", caseC.state);          
+   //printf("                  State: %s\n", caseC.state);          
    printf("      New positive test: %d tests\n", caseC.newPos);
    printf("             Total test: %d cases\n", caseC.newTot);
    printf("              New death: %d deaths\n", caseC.newDeath);
@@ -55,7 +55,6 @@ void printCaseData (Covidcase caseC) {
 }   
 
 int main() {
-   
    
    FILE* inFile = NULL;
    Covidcase inCoState[400];
@@ -76,7 +75,7 @@ int main() {
 
    fgets(trash,300,inFile);
 
-   for(i = 0; i < 55; i++) {
+   while(!feof(inFile)) {
 
       fscanf(inFile, "%s", date);
       fscanf(inFile, "%s", state);
@@ -89,7 +88,7 @@ int main() {
 
       strcpy(currS, state);
       
-      while((strcmp(state, currS) == 0) && currS != NULL){
+      while((strcmp(state, currS) == 0)){
          fscanf(inFile, "%s", date);
          fscanf(inFile, "%s", state);
          fscanf(inFile, "%d", &newPos);
@@ -97,8 +96,16 @@ int main() {
          fscanf(inFile, "%d", &newDeath);
          fscanf(inFile, "%d", &currHos);
          fscanf(inFile, "%d", &currVent);
-
+         //strcpy(currS, state);
+         if(feof(inFile)){
+            printStar(currS, totalPos);
+            break;
+         }
          totalPos += newPos;
+         
+      }
+      if(feof(inFile)){
+            break;
       }
       totalPos += - newPos;
       printStar(currS, totalPos);
@@ -107,41 +114,23 @@ int main() {
       totalPos = newPos;
    }
 
-   while(!feof(inFile)) {
-      fscanf(inFile, "%s", date);
-      fscanf(inFile, "%s", state);
-      fscanf(inFile, "%d", &newPos);
-      fscanf(inFile, "%d", &newTot);            //the last one
-      fscanf(inFile, "%d", &newDeath);
-      fscanf(inFile, "%d", &currHos);
-      fscanf(inFile, "%d", &currVent);
-
-      totalPos += newPos;
-
-   }
-
-   printStar(state, totalPos);
-   printf("\n\n");
-
-   //fclose(inFile);
+   printf("\n");
 
    //program after histogram -----------------------------------
 
    printf("Which state or territory data you would wasnt to anlyze (i.e. CA):\n");
    scanf("%s",inputS);
    
-   
    int totalDea;
    
    printf("\n. . . .\n");
    
    while(strcmp(inputS, "q") != 0) {
-      //inFile = fopen("COVID19USdata_2020_2021.txt", "r");
-      rewind(inFile);
+      rewind(inFile);                        //back to the beginning of the file
       fgets(trash,300,inFile);
       i = 0;
       totalDea = 0;
-   
+      totalPos = 0;
       while(!feof(inFile)){
    
          fscanf(inFile, "%s", date);
@@ -168,18 +157,16 @@ int main() {
          }
       }
    
-      //fclose(inFile);
-   
       SelectionSortPos(inCoState,i);
 
+      printf("State: %s", inputS);
+      printf("            Total case: %d\n",totalPos);
+      printf("           Total death: %d\n\n",totalDea);
+      
       printf("Date with most positive case:\n");
       for( j = 0; j < 10; j++) {
          printCaseData(inCoState[i-j-1]);  
       }
-   
-      printf("            Total case: %d\n",totalPos);
-      printf("           Total death: %d\n\n",totalDea);
-
 
       printf("Which state or territory data you would wasnt to anlyze (i.e. CA)\n");
       printf("Enter 'q' to quit:\n");
