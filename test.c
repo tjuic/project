@@ -39,6 +39,7 @@ void printStar (char covidState[20], int totalPos) {
    for(i = 0; i < totalPos/50000 ; i++) {
       printf("* ");
    }
+   printf(" %d",totalPos);
    printf("\n");
 }
 
@@ -122,7 +123,7 @@ int main() {
    printStar(state, totalPos);
    printf("\n\n");
 
-   fclose(inFile);
+   //fclose(inFile);
 
    //program after histogram -----------------------------------
 
@@ -135,7 +136,8 @@ int main() {
    printf("\n. . . .\n");
    
    while(strcmp(inputS, "q") != 0) {
-      inFile = fopen("COVID19USdata_2020_2021.txt", "r");
+      //inFile = fopen("COVID19USdata_2020_2021.txt", "r");
+      rewind(inFile);
       fgets(trash,300,inFile);
       i = 0;
       totalDea = 0;
@@ -166,7 +168,7 @@ int main() {
          }
       }
    
-      fclose(inFile);
+      //fclose(inFile);
    
       SelectionSortPos(inCoState,i);
 
@@ -184,6 +186,7 @@ int main() {
       scanf("%s",inputS);
 
    }
+   fclose(inFile);
 
 return 0;
 }
