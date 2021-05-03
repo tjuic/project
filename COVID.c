@@ -33,6 +33,26 @@ void SelectionSortPos (Covidcase covidState[], int size) {
    }
 }
 
+void SelectionSortHos (Covidcase covidState[], int size) {  
+   int i;
+   int j;
+   int indexSmallest;
+   Covidcase temp;
+   
+   for (i = 0; i < size - 1; i++) {    //one more than the size
+      indexSmallest = i;
+      for(j = i + 1; j < size; j++) {
+         
+         if (covidState[j].currHos < covidState[indexSmallest].currHos ) {
+            indexSmallest = j;
+         }
+      }
+      temp = covidState[i];
+      covidState[i] = covidState[indexSmallest];
+      covidState[indexSmallest] = temp;
+   }
+}
+
 void printStar (char covidState[20], int totalPos) {
    int i;
    printf("%s: ", covidState);
@@ -44,13 +64,12 @@ void printStar (char covidState[20], int totalPos) {
 }
 
 void printCaseData (Covidcase caseC) {
-   printf("                   Date: %s\n", caseC.date);
-   //printf("                  State: %s\n", caseC.state);          
-   printf("      New positive test: %d tests\n", caseC.newPos);
-   printf("             Total test: %d cases\n", caseC.newTot);
-   printf("              New death: %d deaths\n", caseC.newDeath);
-   printf(" Currently hospitalized: %d cases\n", caseC.currHos);
-   printf("Current on a ventilator: %d cases\n\n", caseC.currVent);
+   printf("                      Date: %s\n", caseC.date);         
+   printf("         New positive test: %d tests\n", caseC.newPos);
+   printf("                Total test: %d cases\n", caseC.newTot);
+   printf("                 New death: %d deaths\n", caseC.newDeath);
+   printf("    Currently hospitalized: %d cases\n", caseC.currHos);
+   printf("   Current on a ventilator: %d cases\n\n", caseC.currVent);
    return;
 }   
 
@@ -65,8 +84,8 @@ int main() {
    int newPos, newTot, newDeath, currHos, currVent;
    char date[20], state[20], currS[20];
 
-   printf("COVID-19 cases of the US by states and territories\n\n");
-   printf("Covid cases by state and terrotories (* represent a 50000 cases): \n");
+   printf("COVID-19 cases of the US by states and territories\n");
+   printf("Covid cases by state and terrotories (* represent a 50000 cases):\n");
 
    inFile = fopen("COVID19USdata_2020_2021.txt", "r");
 
@@ -93,7 +112,6 @@ int main() {
          fscanf(inFile, "%d", &newDeath);
          fscanf(inFile, "%d", &currHos);
          fscanf(inFile, "%d", &currVent);
-         //strcpy(currS, state);
          if(feof(inFile)){
             printStar(currS, totalPos);
             break;
@@ -118,7 +136,7 @@ int main() {
    char inputS[10];
    int totalDea;
 
-   printf("Which state or territory data you would wasnt to anlyze (i.e. CA):\n");
+   printf("Which state or territory data you would want to anlyze (i.e. CA):\n");
    scanf("%s",inputS);
    
    printf("\n. . . .\n");
@@ -156,7 +174,7 @@ int main() {
       }
 
       printf("State: %s\n", inputS);
-      printf("            Total case: %d\n",totalPos);
+      printf("             Total case: %d\n",totalPos);
       printf("            Total death: %d\n\n",totalDea);
       
       // printf("Ten day with most positive test cases:\n");
@@ -165,13 +183,20 @@ int main() {
       // }
 
       SelectionSortPos(inCoState,i);
-      printf("Five day with most positive test cases:\n");
+      printf("Ten days with most positive test cases:\n");
       for( j = 0; j < 10; j++) {
          printCaseData(inCoState[i-j-1]);  
       }
       printf("\n\n");
 
-      printf("Which state or territory data you would wasnt to anlyze (i.e. CA)\n");
+      SelectionSortHos(inCoState,i);
+      printf("Five days with most patients currently hospitalized:\n");
+      for( j = 0; j < 5; j++) {
+         printCaseData(inCoState[i-j-1]);  
+      }
+      printf("\n\n");
+
+      printf("Which state or territory data you would want to anlyze (i.e. CA)\n");
       printf("Enter 'q' to quit:\n");
       scanf("%s",inputS);
 
@@ -180,6 +205,7 @@ int main() {
 
 return 0;
 }
+
 
 
 
